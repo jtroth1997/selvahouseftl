@@ -1,1 +1,22 @@
-const gate=document.getElementById('gate');const closeGate=()=>{gate.classList.add('hidden');sessionStorage.setItem('selva-access','1')};document.getElementById('gateForm').addEventListener('submit',e=>{e.preventDefault();closeGate()});document.getElementById('skip').onclick=closeGate;document.getElementById('register').onclick=()=>gate.classList.remove('hidden');if(sessionStorage.getItem('selva-access'))gate.classList.add('hidden');const header=document.querySelector('header');window.addEventListener('scroll',()=>header.classList.toggle('scrolled',scrollY>30),{passive:true});document.getElementById('menu').onclick=()=>{const n=document.querySelector('nav');n.classList.toggle('mobile-open')};const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;const revealEls=document.querySelectorAll('.intro h2,.intro-grid>* ,.vision-gallery figure,.vg-copy,.section-head>* ,.res-grid article,.lifestyle-strip figure,.detail-copy>* ,.quote p,.location>div,.downloads>* ,.contact>*');revealEls.forEach(el=>el.classList.add('reveal'));if(!reduce){const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('is-visible');io.unobserve(e.target)}}),{threshold:.12,rootMargin:'0px 0px -7%'});revealEls.forEach(el=>io.observe(el));const parallax=[...document.querySelectorAll('.hero-media,.cinema-img,.pool-feature img,.detail-image')];let ticking=false;const motion=()=>{const y=scrollY;document.documentElement.style.setProperty('--scroll',y);parallax.forEach(el=>{const r=el.getBoundingClientRect();if(r.bottom>0&&r.top<innerHeight){const p=(innerHeight-r.top)/(innerHeight+r.height);el.style.setProperty('--py',`${(p-.5)*34}px`)}});ticking=false};addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(motion);ticking=true}},{passive:true});motion();document.querySelectorAll('.vision-gallery figure,.res-grid article,.lifestyle-strip figure').forEach(card=>{card.addEventListener('pointermove',e=>{if(innerWidth<900)return;const r=card.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;card.style.transform=`perspective(1200px) rotateX(${-y*2.5}deg) rotateY(${x*2.5}deg) translateY(-3px)`});card.addEventListener('pointerleave',()=>card.style.transform='')})}else revealEls.forEach(el=>el.classList.add('is-visible'));
+const gate=document.querySelector('.gate');
+const closeGate=()=>{gate.classList.add('gate--closed');sessionStorage.setItem('selva-access','1')};
+const openGate=()=>gate.classList.remove('gate--closed');
+document.getElementById('gateForm').addEventListener('submit',e=>{e.preventDefault();closeGate()});
+document.getElementById('skip').addEventListener('click',closeGate);
+document.getElementById('access').addEventListener('click',openGate);
+document.getElementById('requestAccess').addEventListener('click',openGate);
+if(sessionStorage.getItem('selva-access'))closeGate();
+
+const header=document.querySelector('header');
+addEventListener('scroll',()=>header.classList.toggle('header--scrolled',scrollY>48),{passive:true});
+const menu=document.getElementById('menu'),nav=document.querySelector('nav');
+menu.addEventListener('click',()=>nav.classList.toggle('nav--open'));
+nav.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>nav.classList.remove('nav--open')));
+
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(!reduced){
+  const items=document.querySelectorAll('.manifesto>*,.numbers article,.section-title>*,.residence__copy>*,.features__intro>*,.features li,.location__copy>*,.private>*');
+  items.forEach(item=>item.classList.add('scroll-reveal'));
+  const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('in-view');observer.unobserve(entry.target)}}),{threshold:.12,rootMargin:'0px 0px -7%'});
+  items.forEach(item=>observer.observe(item));
+}
